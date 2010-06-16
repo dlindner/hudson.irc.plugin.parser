@@ -8,20 +8,20 @@ import com.schneide.hudson.irc.parser.model.BuildResultMessage;
 import com.schneide.hudson.irc.parser.util.StringChunker;
 
 public class MessageParser {
-	
+
 	private static final String MESSAGE_PREFIX = "Project "; //$NON-NLS-1$
-	
+
 	public MessageParser() {
 		super();
 	}
-	
+
 	public boolean mightBeAMessage(String message) {
 		return (message.startsWith(MESSAGE_PREFIX));
 	}
 
 	public BuildResultMessage parse(String message) throws ParseException {
 		if (!mightBeAMessage(message)) {
-			throw new ParseException("This isn't a valid hudson ircbot message", 0); //$NON-NLS-1$
+			throw new ParseException("This isn't a valid hudson ircbot message: " + message, 0); //$NON-NLS-1$
 		}
 		String truncatedMessage = message.substring(MESSAGE_PREFIX.length());
 		StringChunker chunker = new StringChunker(truncatedMessage, ":"); //$NON-NLS-1$
@@ -32,7 +32,7 @@ public class MessageParser {
 		String buildURL = extractBuildURL(chunker.getNextChunk());
 		return new ParsedBuildResultMessage(jobName, buildResult, buildURL);
 	}
-	
+
 	protected String extractJobName(String truncatedMessage) throws ParseException {
 		int endOfName = truncatedMessage.indexOf("build ("); //$NON-NLS-1$
 		if (endOfName < 0) {
@@ -48,7 +48,7 @@ public class MessageParser {
 		}
 		return truncatedMessage.substring(0, endOfResult).trim();
 	}
-	
+
 	protected String extractBuildURL(final String truncatedMessage) {
 		StringChunker chunker = new StringChunker(truncatedMessage.trim(), " "); //$NON-NLS-1$
 		return chunker.getNextChunk();
