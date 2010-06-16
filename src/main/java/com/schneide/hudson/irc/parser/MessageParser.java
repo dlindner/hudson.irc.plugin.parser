@@ -29,7 +29,7 @@ public class MessageParser {
 		String buildResultText = extractBuildResultRepresentation(chunker.getNextChunk());
 		BuildResultParser resultParser = new BuildResultParser();
 		BuildResult buildResult = resultParser.parse(buildResultText);
-		String buildURL = extractBuildURL(chunker.getNextChunk());
+		String buildURL = extractBuildURL(chunker.getRemainingString());
 		return new ParsedBuildResultMessage(jobName, buildResult, buildURL);
 	}
 
