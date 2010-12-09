@@ -20,17 +20,17 @@ public class MessageParserTest extends TestCase {
 		assertEquals(false, parser.mightBeAMessage("some weird text"));
 		assertEquals(false, parser.mightBeAMessage("Project"));
 		assertEquals(true, parser.mightBeAMessage("Project "));
-		assertEquals(true, parser.mightBeAMessage("Project jobname build (1):"));
+		assertEquals(true, parser.mightBeAMessage("Project jobname build #1:"));
 	}
 
 	public void testExtractJobName() throws ParseException {
 		MessageParser parser = new MessageParser();
 		assertEquals("somejob",
-				parser.extractJobName("somejob build (1): SUCCESS in 0,15 Sekunden: http://localhost:8080/job/somejob/1/"));
+				parser.extractJobName("somejob build #1: SUCCESS in 0,15 Sekunden: http://localhost:8080/job/somejob/1/"));
 		assertEquals("somejob",
-				parser.extractJobName("somejob build ("));
+				parser.extractJobName("somejob build #"));
 		assertEquals("whitespace in name",
-				parser.extractJobName("whitespace in name build ("));
+				parser.extractJobName("whitespace in name build #"));
 	}
 
 	public void testExtractJobNameFailure() {
@@ -78,21 +78,21 @@ public class MessageParserTest extends TestCase {
 
 	public void testSuccessMessage() throws ParseException {
 		MessageParser parser = new MessageParser();
-		BuildResultMessage message = parser.parse("Project somejob build (1): SUCCESS in 0,15 Sekunden: http://localhost:8080/job/somejob/1/");
+		BuildResultMessage message = parser.parse("Project somejob build #1: SUCCESS in 0,15 Sekunden: http://localhost:8080/job/somejob/1/");
 		assertEquals("somejob", message.getJobName());
 		assertSame(BuildResult.SUCCESS, message.getBuildResult());
 	}
 
 	public void testRealMessage1() throws ParseException {
 		MessageParser parser = new MessageParser();
-		BuildResultMessage message = parser.parse("Project bergen-client-reports build (67): STILL UNSTABLE in 3 min 26 sec: http://obrien:8080/job/bergen-client-reports/67/");
+		BuildResultMessage message = parser.parse("Project bergen-client-reports build #67: STILL UNSTABLE in 3 min 26 sec: http://obrien:8080/job/bergen-client-reports/67/");
 		assertEquals("bergen-client-reports", message.getJobName());
 		assertSame(BuildResult.STILL_UNSTABLE, message.getBuildResult());
 	}
 
 	public void testRealMessage2() throws ParseException {
 		MessageParser parser = new MessageParser();
-		BuildResultMessage message = parser.parse("Project ramses-visualizer-reports build (1943): SUCCESS in 10 min: http://reportbox.intranet/job/ramses-visualizer-reports/1943/");
+		BuildResultMessage message = parser.parse("Project ramses-visualizer-reports build #1943: SUCCESS in 10 min: http://reportbox.intranet/job/ramses-visualizer-reports/1943/");
 		assertEquals("ramses-visualizer-reports", message.getJobName());
 		assertEquals(BuildResult.SUCCESS, message.getBuildResult());
 		assertEquals("http://reportbox.intranet/job/ramses-visualizer-reports/1943/", message.getBuildURL());

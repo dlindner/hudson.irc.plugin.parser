@@ -34,7 +34,7 @@ public class MessageParser {
 	}
 
 	protected String extractJobName(String truncatedMessage) throws ParseException {
-		int endOfName = truncatedMessage.indexOf("build ("); //$NON-NLS-1$
+		int endOfName = truncatedMessage.indexOf("build #"); //$NON-NLS-1$
 		if (endOfName < 0) {
 			throw new ParseException("Cannot find end of job name token.", 0); //$NON-NLS-1$
 		}
